@@ -16,8 +16,6 @@ import mlflow
 from mlflow.models import infer_signature
 import mlflow.sklearn
 
-
-
 import logging
 
 logging.basicConfig(level=logging.WARN)
@@ -80,6 +78,13 @@ if __name__ == "__main__":
         predictions = lr.predict(train_x)
         signature = infer_signature(train_x, predictions)
 
+        """
+        ## For Remote server only(DAGShub)
+
+        remote_server_uri="https://dagshub.com/krishnaik06/mlflowexperiments.mlflow"
+        mlflow.set_tracking_uri(remote_server_uri)
+        """
+
         tracking_url_type_store = urlparse(mlflow.get_tracking_uri()).scheme
 
         # Model registry does not work with file store
@@ -89,7 +94,7 @@ if __name__ == "__main__":
             # please refer to the doc for more information:
             # https://mlflow.org/docs/latest/model-registry.html#api-workflow
             mlflow.sklearn.log_model(
-                lr, "model", registered_model_name="ElasticnetWineModel", signature=signature
+                lr, "model", registered_model_name="ElasticnetWineModel"
             )
         else:
-            mlflow.sklearn.log_model(lr, "model", signature=signature)
+            mlflow.sklearn.log_model(lr, "model")
